@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Impostor en casa de los Vi-Vi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+:root{
+  --bg:#eaf0fa; --surface:#ffffff; --ink:#15203b; --muted:#56638347; --muted-ink:#55627f; --line:#cdd6ea;
+  --crew:#1b9fd0; --crew-soft:#dff3fb; --imp:#d6313a; --imp-soft:#fde5e6; --gold:#e9a800; --ok:#1b8f5a;
+  --on-crew:#07182c; --on-imp:#ffffff; --shadow:0 2px 0 rgba(21,32,59,.12);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111a30; --surface:#1a2644; --ink:#eef2fb; --muted-ink:#a5b0cd; --line:#2f3d66;
+    --crew:#4cc9f0; --crew-soft:#17344f; --imp:#ff5b64; --imp-soft:#3d1c2c; --gold:#f7c948; --ok:#4fd08e;
+    --on-crew:#07182c; --on-imp:#2a0709; --shadow:0 2px 0 rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111a30; --surface:#1a2644; --ink:#eef2fb; --muted-ink:#a5b0cd; --line:#2f3d66;
+  --crew:#4cc9f0; --crew-soft:#17344f; --imp:#ff5b64; --imp-soft:#3d1c2c; --gold:#f7c948; --ok:#4fd08e;
+  --on-crew:#07182c; --on-imp:#2a0709; --shadow:0 2px 0 rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:'Nunito','Trebuchet MS',system-ui,sans-serif;font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+#app{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1,h2,h3{font-family:'Baloo 2','Trebuchet MS',system-ui,sans-serif;line-height:1.1;margin:0}
+h1{font-size:38px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:30px;font-weight:800}
+h3{font-size:19px;font-weight:800;margin-bottom:8px}
+p{margin:0 0 10px}
+.muted{color:var(--muted-ink)}
+.top{padding:10px 0 18px}
+.top p{margin-top:8px;color:var(--muted-ink);max-width:36ch}
+section{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px}
+.prow{display:flex;gap:8px;margin-bottom:8px}
+input[type=text],input:not([type]),textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:11px 13px}
+textarea{min-height:96px;resize:vertical;margin-top:10px}
+button{font:inherit;font-weight:800;cursor:pointer;border:2px solid transparent;border-radius:16px;padding:12px 16px;color:var(--ink);background:var(--surface);touch-action:manipulation}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.primary{background:var(--crew);color:var(--on-crew);box-shadow:var(--shadow)}
+.danger{background:var(--imp);color:var(--on-imp);box-shadow:var(--shadow)}
+.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.lg{width:100%;padding:16px;font-size:18px;margin-top:10px}
+.sm{padding:8px 12px;flex:none}
+button:disabled{opacity:.45;cursor:not-allowed}
+.seg{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.seg button{flex:1;min-width:52px;border-color:var(--line);padding:10px 6px}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lbl{font-weight:800;font-size:15px;margin-bottom:6px;display:block}
+details summary{cursor:pointer;font-weight:800;padding:4px 0}
+.center{text-align:center;padding-top:40px}
+.big{font-size:52px;margin:6px 0 16px}
+.visorCard{border-radius:28px;padding:22px 18px 18px;border:3px solid var(--role);background:var(--role-soft);margin-bottom:6px}
+.visorCard.crew{--role:var(--crew);--role-soft:var(--crew-soft)}
+.visorCard.imp{--role:var(--imp);--role-soft:var(--imp-soft)}
+.visor{width:140px;height:86px;margin:0 auto 14px;border-radius:46px;background:var(--role);position:relative;box-shadow:inset 0 -8px 0 rgba(0,0,0,.14)}
+.visor::before{content:"";position:absolute;left:30px;right:-6px;top:12px;height:46px;border-radius:30px;background:#0f1d36;border:3px solid rgba(255,255,255,.55)}
+.visor::after{content:"";position:absolute;left:46px;top:20px;width:34px;height:9px;border-radius:6px;background:rgba(255,255,255,.75)}
+.visorCard h2{text-align:center;color:var(--role)}
+.visorCard .sub{text-align:center;margin:6px 0 14px}
+.tasks{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.task{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:11px 13px;font-weight:600}
+.task b{display:block;font-weight:800}
+.task small{color:var(--muted-ink);font-size:14px;font-weight:600}
+.task .tick{flex:none;width:26px;height:26px;border-radius:9px;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;margin-top:1px}
+.task.done{opacity:.7}
+.task.done b{text-decoration:line-through}
+.task.done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.task.static{cursor:default}
+.tag{font-size:12px;font-weight:800;border-radius:8px;padding:1px 7px;margin-left:6px;background:var(--bg);color:var(--muted-ink);vertical-align:middle}
+.sab{margin-top:14px;padding-top:12px;border-top:2px dashed var(--role)}
+.sabText{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--surface);font-weight:800}
+.bar{height:20px;border-radius:12px;background:var(--surface);border:2px solid var(--line);overflow:hidden;margin:6px 0 4px}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.pl{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--line)}
+.pl:last-child{border-bottom:0}
+.pl .nm{font-weight:800;font-size:18px}
+.chip{font-size:13px;font-weight:800;border-radius:10px;padding:2px 9px;background:var(--crew-soft);color:var(--ink);margin-left:6px}
+.chip.out{background:var(--imp-soft)}
+.pick{display:flex;width:100%;justify-content:space-between;align-items:center;text-align:left;margin-bottom:8px;border-color:var(--line);padding:14px 16px}
+.pick[aria-pressed=true]{border-color:var(--gold);background:var(--bg);box-shadow:0 0 0 3px var(--gold)}
+.clock{font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;font-size:96px;line-height:1;margin:18px 0}
+.clock.zero{color:var(--imp)}
+.sheet{position:fixed;inset:0;background:rgba(10,16,32,.72);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheetIn{width:100%;max-width:520px;max-height:92%;overflow-y:auto;background:var(--bg);border-radius:26px 26px 0 0;padding:18px 16px calc(22px + env(safe-area-inset-bottom,0px))}
+.rules ol{padding-left:20px;margin:10px 0 0}
+.rules li{margin-bottom:9px}
+.rules .goal{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px 14px}
+.win{border-radius:24px;padding:20px 16px;text-align:center;margin-bottom:14px;background:var(--role-soft);border:3px solid var(--role)}
+.win.crew{--role:var(--crew);--role-soft:var(--crew-soft)}
+.win.imp{--role:var(--imp);--role-soft:var(--imp-soft)}
+.win h2{color:var(--role)}
+.row2{display:flex;gap:8px}
+.row2>*{flex:1}
+.tasksList{padding:0;margin:0}
+.trow{list-style:none;background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:11px 13px;margin-bottom:8px}
+.trow.off .tt{opacity:.5}
+.tt b{display:block}
+.tt small{display:block;color:var(--muted-ink);font-size:14px;font-weight:600}
+.tbtn{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tbtn button[aria-pressed=true]{border-color:var(--ok)}
+.mustb[aria-pressed=true]{border-color:var(--gold);background:var(--surface)}
+.dot{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);vertical-align:-2px;margin-right:8px;flex:none}
+.big .dot{width:34px;height:34px;vertical-align:-3px;border-width:3px}
+.visorCard h2 .dot{width:22px;height:22px;vertical-align:-3px}
+.sw{width:46px;height:46px;border-radius:14px;padding:0;border:2px solid var(--ink);flex:none}
+.swgrid{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px;padding:10px;border-radius:14px;background:var(--bg)}
+.swgrid button{width:40px;height:40px;border-radius:50%;padding:0;border:2px solid var(--ink)}
+.swgrid button[aria-pressed=true]{box-shadow:0 0 0 3px var(--gold)}
+@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ====== Datos ======
+const SHORT=[
+ ["Poner la mesa","Coloca platos y cubiertos para todos los jugadores."],
+ ["Regar las plantas","Riega todas las plantas de la casa."],
+ ["Vaciar la basura","Saca la basura de un cuarto, baño o cocina y pon una bolsa nueva."],
+ ["Doblar 5 prendas","Dobla cinco prendas limpias y guárdalas."],
+ ["Barrer la entrada","Barre la entrada o el pasillo principal."],
+ ["Ordenar los zapatos","Pon todos los zapatos en su lugar."],
+ ["Lavar un par de platos","Lava y enjuaga dos platos o vasos."],
+ ["Cambiar la toalla","Cuelga una toalla limpia en el baño."],
+ ["Ordenar sala de estar","Deja todos los controles remotos en fila sobre la mesa."],
+ ["Limpiar secaplatos","Seca, vacía y guarda 5 platos o vasos"],
+ ["Conectar cables","Ordena los cables de un enchufe sin dejar nudos."],
+ ["Llenar bandeja de hielo","Llena de agua la bandeja para hacer hielo"],
+ ["Limpiar el espejo","Pásale un paño al espejo del baño."],
+ ["Acomodar cojines","Acomoda los cojines del sofá."],
+ ["Limpiar la mesa","Limpia la mesa del comedor con un paño."],
+ ["Ordenar la sala de estar","Guarda todo lo que esté tirado en el piso de la sala de estar."],
+ ["Reponer papel","Revisa el baño y cambia el rollo de papel si hace falta."],
+ ["Sacudir el polvo","Sacude el polvo de un mueble."],
+ ["Guardar platos secos","Guarda los platos secos del escurridor."],
+ ["Limpiar el lavamanos","Deja limpio y seco el lavamanos del baño."],
+ ["Doblar toallas","Dobla las toallas limpias."],
+ ["Escáner médico","Párate 10 segundos, sin moverte, frente al espejo del baño."],
+ ["Desviar energía","Apaga las luces de tres cuartos vacíos."],
+ ["Ventilar habitación","Abre una ventana un minuto para ventilar un cuarto."],
+ ["Saltar en cama elástica","Saltar 10 veces en la cama elástica"],
+ ["Revisar la despensa","Acomoda latas y paquetes con la etiqueta hacia el frente."],
+ ["Limpiar la pantalla","Limpia la pantalla de la tele con un paño seco."],
+ ["Recargar combustible","Llena una botella de agua y llévala a la sala."],
+ ["Tender una cama","Estira sábanas y cobija de una cama."],
+ ["Revisar el refri","Saca lo vencido o dañado del refrigerador."],
+ ["Vaciar el cesto","Lleva la ropa sucia de un cuarto a la lavadora."]
+];
+const LONG=[
+ ["Lavar los platos","Lava, enjuaga y escurre todos los platos sucios."],
+ ["Aspirar una habitación","Aspira el piso completo de una habitación."],
+ ["Cambiar sábanas","Cambia las sábanas de una cama."],
+ ["Lavadora completa","Carga la lavadora y tiende la ropa."],
+ ["Limpiar la cocina","Limpia la encimera"],
+ ["Trapear la cocina","Pasa el trapeador por todo el piso de la cocina."],
+ ["Limpiar el inodoro","Deja limpio el inodoro."],
+ ["Ordenar un clóset","Ordena un clóset o un cajón completo."],
+ ["Sacar toda la basura","Recoge la basura de la casa y llévala afuera."],
+ ["Limpiar ventanas","Limpia los vidrios de una habitación."],
+ ["Limpia el microondas.","Limpia por dentro el microondas."],
+ ["Limpiar la ducha","Enjuaga y friega la ducha o la tina."],
+ ["Barrer toda la sala","Barre y recoge la sala completa."],
+ ["Ordenar la entrada","Acomoda abrigos, bolsos y llaves en su sitio."]
+];
+const FAKE=[
+ "Ir al baño","Revisar la nevera","Mirar por la ventana","Buscar algo en tu cuarto",
+ "Tomar un vaso de agua","Cargar tu celular","Pasar por la cocina","Sentarte un rato en el sofá",
+ "Buscar las llaves","Revisar el buzón","Acomodar algo en tu cuarto","Asomarte al pasillo"
+];
+const SABS=[
+ "Apagón: apaga la luz de la sala o del pasillo. La tripulación debe volver a encenderla.",
+ "Fuga de oxígeno: abre una ventana de la casa. La tripulación debe cerrarla.",
+ "Cortocircuito: desconecta una lámpara o un cargador. La tripulación debe volver a conectarlo.",
+ "Comunicaciones caídas: esconde los controles remotos en un cajón. La tripulación debe encontrarlos y ponerlos en la mesa.",
+ "Reactor inestable: deja la puerta de la nevera cerrada con una silla delante. La tripulación debe quitar la silla."
+];
+const RULES=[
+ "Reparte los roles pasando el celular. Nadie mira la pantalla de otro.",
+ "Los tripulantes hacen sus tareas de verdad y las marcan en “Mi tarjeta”. El impostor finge las suyas.",
+ "Para eliminar, el impostor toca el hombro de un tripulante y susurra “eliminado”. La víctima se sienta donde está y no habla. Entre una eliminación y otra, el impostor espera 30 segundos.",
+ "Quien encuentre un cuerpo grita “¡Reunión!”. Todos se juntan y se abre la reunión en la app.",
+ "Cada jugador puede llamar una reunión de emergencia por partida, aunque no haya cuerpos.",
+ "En la discusión cada quien cuenta dónde estuvo y qué vio. Después votan: a la cuenta de tres, todos señalan a la vez. Gana el más señalado; si hay empate, nadie sale.",
+ "Los eliminados y los expulsados no hablan ni señalan, pero siguen haciendo tareas en silencio.",
+ "Sabotaje: el impostor puede hacer hasta 2 por partida. Su tarjeta le da una acción secreta (apagar una luz, abrir una ventana, etc.) que debe hacer sin que lo vean. Si alguien nota algo fuera de lugar, es un sabotaje: debe arreglarlo y puede avisar al grupo.",
+ "Seguridad: no correr, no esconderse en sitios peligrosos y no tocar cosas frágiles. Si alguien se aburre, es parte del juego pedir revancha."
+];
+const COLORS=[
+ {id:"rojo",n:"Rojo",h:"#d6313a"},{id:"azul",n:"Azul",h:"#2f5fd0"},{id:"verde",n:"Verde",h:"#1f8f4a"},{id:"rosa",n:"Rosa",h:"#f06ab8"},
+ {id:"naranja",n:"Naranja",h:"#f08a1c"},{id:"amarillo",n:"Amarillo",h:"#f2d21f"},{id:"negro",n:"Negro",h:"#2b2f3a"},{id:"blanco",n:"Blanco",h:"#f4f6fa"},
+ {id:"morado",n:"Morado",h:"#7a3fc9"},{id:"cafe",n:"Café",h:"#7b4a2a"},{id:"celeste",n:"Celeste",h:"#3fc5e8"},{id:"lima",n:"Lima",h:"#8bd321"}
+];
+const cinfo=id=>COLORS.find(c=>c.id===id)||COLORS[0];
+const chex=id=>cinfo(id).h,cname=id=>cinfo(id).n;
+const dot=id=>`<span class="dot" role="img" aria-label="Color ${cname(id)}" style="background:${chex(id)}"></span>`;
+function swGrid(i){
+  const taken=S.colors.filter((c,j)=>j!==i);
+  return `<div class="swgrid" role="group" aria-label="Elegir color">${COLORS.filter(c=>!taken.includes(c.id)).map(c=>`<button data-act="setColor" data-i="${i}" data-c="${c.id}" aria-label="${c.n}" aria-pressed="${S.colors[i]===c.id}" style="background:${c.h}"></button>`).join("")}</div>`;
+}
+// ====== Estado ======
+const S={screen:"home",players:["Jugador 1","Jugador 2","Jugador 3","Jugador 4"],colors:["rojo","azul","verde","rosa"],pickIdx:null,nImp:1,nShort:3,nLong:1,discuss:90,cust:[],off:[],must:[],ov:{},cfg:"",cfgMsg:"",cfgOpen:false,editing:null,editDraft:{t:"",d:""},draft:{t:"",d:"",l:false,m:false},rules:false,view:null,confirmEnd:false};
+let G=null;
+try{
+  const v=JSON.parse(localStorage.getItem("impostor-en-casa")||"{}");
+  if(Array.isArray(v.colors))S.colors=v.colors.map(String);
+  if(Array.isArray(v.names)&&v.names.length>=3&&v.names.length<=8)S.players=v.names.map(String);
+  cfgTasks(v);
+  if([60,90,120].includes(v.discuss))S.discuss=v.discuss;
+  if(Array.isArray(v.cust))S.cust=v.cust.filter(c=>c&&c.id&&c.t).map(c=>({id:String(c.id),t:String(c.t),d:String(c.d||""),l:!!c.l})).slice(0,60);
+  else if(Array.isArray(v.custom))S.cust=v.custom.map(String).slice(0,40).map((t,i)=>({id:"m"+i,t,d:"",l:false}));
+  if(Array.isArray(v.off))S.off=v.off.map(String);
+  if(Array.isArray(v.must))S.must=v.must.map(String);
+  if(v.ov&&typeof v.ov==="object")Object.keys(v.ov).forEach(k=>{const o=v.ov[k];if(o&&o.t)S.ov[k]={t:String(o.t),d:String(o.d||"")}});
+}catch(e){}
+function cfgTasks(v){
+  if(Number.isInteger(v.nShort)&&v.nShort>=0&&v.nShort<=6&&Number.isInteger(v.nLong)&&v.nLong>=0&&v.nLong<=3&&v.nShort+v.nLong>0){S.nShort=v.nShort;S.nLong=v.nLong}
+  else if([3,4,5,6].includes(v.nTasks)){S.nLong=Math.max(1,Math.round(v.nTasks/3));S.nShort=v.nTasks-S.nLong}
+}
+function normColors(){
+  const ids=COLORS.map(c=>c.id),used=new Set();
+  S.colors=S.players.map((_,i)=>{let c=S.colors[i];if(!ids.includes(c)||used.has(c))c=ids.find(x=>!used.has(x));used.add(c);return c});
+}
+normColors();
+function save(){
+  try{localStorage.setItem("impostor-en-casa",JSON.stringify({names:S.players,nShort:S.nShort,nLong:S.nLong,discuss:S.discuss,cust:S.cust,off:S.off,must:S.must,ov:S.ov,colors:S.colors}))}catch(e){}
+}
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+
+// ====== Lógica ======
+function applyCfg(v){
+  if(!v||typeof v!=="object")throw new Error("cfg");
+  if(Array.isArray(v.names)&&v.names.length>=3&&v.names.length<=8)S.players=v.names.map(String);
+  cfgTasks(v);
+  if([60,90,120].includes(v.discuss))S.discuss=v.discuss;
+  if(Array.isArray(v.cust))S.cust=v.cust.filter(c=>c&&c.id&&c.t).map(c=>({id:String(c.id),t:String(c.t),d:String(c.d||""),l:!!c.l})).slice(0,60);
+  if(Array.isArray(v.off))S.off=v.off.map(String);
+  if(Array.isArray(v.must))S.must=v.must.map(String);
+  if(v.ov&&typeof v.ov==="object"){S.ov={};Object.keys(v.ov).forEach(k=>{const o=v.ov[k];if(o&&o.t)S.ov[k]={t:String(o.t),d:String(o.d||"")}})}
+  if(Array.isArray(v.colors))S.colors=v.colors.map(String);
+  normColors();
+  save();
+}
+function allTasks(){
+  return SHORT.map(x=>({key:x[0],t:(S.ov[x[0]]||{}).t||x[0],d:S.ov[x[0]]?S.ov[x[0]].d:x[1],l:false,built:true}))
+    .concat(LONG.map(x=>({key:x[0],t:(S.ov[x[0]]||{}).t||x[0],d:S.ov[x[0]]?S.ov[x[0]].d:x[1],l:true,built:true})))
+    .concat(S.cust.map(c=>({key:"c:"+c.id,t:c.t,d:c.d,l:c.l,built:false})));
+}
+const activeCount=()=>allTasks().filter(x=>!S.off.includes(x.key)).length;
+const mustCount=()=>allTasks().filter(x=>S.must.includes(x.key)&&!S.off.includes(x.key)).length;
+function newGame(){
+  const names=S.players.map((n,i)=>n.trim()||("Jugador "+(i+1)));
+  const nImp=names.length<5?1:Math.min(S.nImp,2);
+  const impSet=new Set(shuffle(names.map((_,i)=>i)).slice(0,nImp));
+  const all=allTasks().filter(x=>!S.off.includes(x.key));
+  const mustT=shuffle(all.filter(x=>S.must.includes(x.key)));
+  const rest=all.filter(x=>!S.must.includes(x.key));
+  const srcS=rest.filter(x=>!x.l),srcL=rest.filter(x=>x.l);
+  const sh=shuffle(srcS),lg=shuffle(srcL);
+  const take=(arr,src,alt)=>{if(!arr.length){const s=src.length?src:alt;arr.push(...shuffle(s))}return arr.length?arr.pop():null};
+  
+  const crewIdx=names.map((_,i)=>i).filter(i=>!impSet.has(i));
+  const mustFor={};
+  mustT.forEach((x,j)=>{const ci=crewIdx[j%crewIdx.length];(mustFor[ci]=mustFor[ci]||[]).push(x)});
+  const players=names.map((name,i)=>{
+    const imp=impSet.has(i);
+    let tasks=[];
+    if(imp){
+      tasks=shuffle(FAKE).slice(0,S.nShort+S.nLong).map(t=>({t,d:"",done:false}));
+    }else{
+      tasks=(mustFor[i]||[]).map(x=>({t:x.t,d:x.d,l:x.l,m:true,done:false}));
+      const needLong=Math.max(0,S.nLong-tasks.filter(x=>x.l).length);
+      const needShort=Math.max(0,S.nShort-tasks.filter(x=>!x.l).length);
+      for(let k=0;k<needLong;k++){const x=take(lg,srcL,srcS);if(x)tasks.push({t:x.t,d:x.d,l:x.l,done:false})}
+      for(let k=0;k<needShort;k++){const x=take(sh,srcS,srcL);if(x)tasks.push({t:x.t,d:x.d,l:x.l,done:false})}
+      tasks=shuffle(tasks);
+    }
+    return {name,imp,tasks,alive:true,out:"",color:S.colors[i]};
+  });
+  G={players,ri:0,rshow:false,sabLeft:2,sabText:{},shown:0,meet:null,winner:null};
+  S.view=null;S.confirmEnd=false;
+}
+function checkWin(){
+  const crew=G.players.filter(p=>!p.imp);
+  const crewAlive=crew.filter(p=>p.alive).length;
+  const impAlive=G.players.filter(p=>p.imp&&p.alive).length;
+  const total=crew.reduce((a,p)=>a+p.tasks.length,0);
+  const done=crew.reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);
+  let w=null;
+  if(impAlive===0)w={side:"crew",why:"No queda ningún impostor en la casa."};
+  else if(total>0&&done===total)w={side:"crew",why:"La tripulación terminó todas sus tareas."};
+  else if(impAlive>=crewAlive)w={side:"imp",why:"Los impostores igualaron en número a la tripulación."};
+  if(w){G.winner=w;G.meet=null;S.view=null;S.screen="end";stopT();return true}
+  return false;
+}
+let tmr=null;
+function stopT(){if(tmr){clearInterval(tmr);tmr=null}}
+function startT(){
+  stopT();
+  tmr=setInterval(()=>{
+    const m=G&&G.meet;
+    if(!m||m.phase!=="discuss"){stopT();return}
+    m.left=Math.max(0,m.left-1);
+    const c=document.getElementById("clock");
+    if(c){c.textContent=fmt(m.left);c.classList.toggle("zero",m.left===0)}
+    if(m.left===0){stopT();try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}}
+  },1000);
+}
+
+// ====== Vistas ======
+function seg(key,opts,val,labels){
+  return `<div class="seg" role="group">${opts.map((o,i)=>`<button data-act="set" data-k="${key}" data-v="${o}" aria-pressed="${o===val}">${labels?labels[i]:o}</button>`).join("")}</div>`;
+}
+function home(){
+  const n=S.players.length;
+  const nImp=n<5?1:S.nImp;
+  return `<header class="top"><h1>Impostor en casa de los Vi-Vi</h1><p>Among Us con las tareas reales de tu hogar. Roles y tareas distintos en cada partida.</p></header>
+  <section><h3>Jugadores</h3>
+    ${S.players.map((p,i)=>`<div class="prow"><button class="sw" data-act="pickColor" data-i="${i}" aria-label="Color de ${esc(p||"jugador")}: ${cname(S.colors[i])}. Cambiar color" style="background:${chex(S.colors[i])}"></button><input type="text" data-pi="${i}" value="${esc(p)}" placeholder="Jugador ${i+1}" maxlength="16" aria-label="Nombre del jugador ${i+1}">${n>3?`<button class="ghost sm" data-act="rm" data-i="${i}" aria-label="Quitar jugador ${i+1}">✕</button>`:""}</div>${S.pickIdx===i?swGrid(i):""}`).join("")}
+    ${n<8?`<button class="ghost" data-act="add">+ Agregar jugador</button>`:""}
+  </section>
+  <section><h3>Partida</h3>
+    <span class="lbl">Impostores</span>
+    <div class="seg">
+      <button data-act="set" data-k="nImp" data-v="1" aria-pressed="${nImp===1}">1</button>
+      <button data-act="set" data-k="nImp" data-v="2" aria-pressed="${nImp===2}" ${n<5?"disabled":""}>2</button>
+    </div>
+    <span class="lbl">Tareas cortas por jugador</span>${seg("nShort",[0,1,2,3,4,5,6],S.nShort)}<span class="lbl">Tareas largas por jugador</span>${seg("nLong",[0,1,2,3],S.nLong)}<p class="muted" style="margin:-4px 0 12px">Total: ${S.nShort+S.nLong} por jugador.</p>
+    
+    <span class="lbl">Tiempo de discusión</span>
+    ${seg("discuss",[60,90,120],S.discuss,["1 min","1:30","2 min"])}
+    <span class="lbl">Tareas</span><p class="muted" style="margin:0 0 10px">${activeCount()} activas de ${allTasks().length}${S.must.length?`, ${mustCount()} “sí o sí” en esta partida`:""}. Cada partida sortea otras.</p><button class="ghost" data-act="tasks" style="width:100%">Administrar tareas</button>${(()=>{const a=allTasks().filter(x=>!S.off.includes(x.key)),c=n-nImp;return a.filter(x=>!x.l).length<c*S.nShort||a.filter(x=>x.l).length<c*S.nLong})()?`<p class="muted" style="margin:10px 0 0">Hay pocas tareas activas de algún tipo: se repetirán entre jugadores.</p>`:""}
+      
+    
+    
+  </section>
+  <button class="primary lg" data-act="start" ${activeCount()===0?"disabled":""}>Repartir roles</button>
+  <button class="ghost lg" data-act="rules">Ver reglamento</button>
+  <section style="margin-top:14px"><details class="cfg" ${S.cfgOpen?"open":""}><summary>Copiar configuración a otro celular</summary>
+    <p class="muted" style="margin:8px 0">Exporta tus nombres, tareas y ediciones. Pega el texto en el otro celular para importarlo.</p>
+    <button class="ghost" data-act="cfgExport" style="width:100%">Exportar configuración</button>
+    <textarea id="cfg" placeholder="Aquí aparece el texto exportado. Para importar, pega aquí el texto de otro celular." aria-label="Texto de configuración">${esc(S.cfg)}</textarea>
+    <button class="ghost" data-act="cfgImport" style="width:100%;margin-top:8px">Importar desde el texto</button>
+    ${S.cfgMsg?`<p class="muted" role="status" style="margin:8px 0 0">${esc(S.cfgMsg)}</p>`:""}
+  </details></section>`;
+}
+function cardHTML(p,i,interactive){
+  const imp=p.imp;
+  const mates=imp?G.players.filter((q,j)=>q.imp&&j!==i).map(q=>q.name):[];
+  const sub=imp
+    ?(mates.length?`Tu cómplice: <b>${mates.map(esc).join(", ")}</b>. Elimina sin que te descubran.`:`Actúas solo. Elimina sin que te descubran.`)
+    :`Haz tus tareas y descubre quién miente.`;
+  const list=imp
+    ?p.tasks.map((t,k)=>interactive?`<li><button class="task ${t.done?"done":""}" data-act="tick" data-i="${i}" data-k="${k}" aria-pressed="${t.done}"><span class="tick" aria-hidden="true">${t.done?"✓":""}</span><span><b>${esc(t.t)}</b><small>Falsa: no cuenta para la barra.</small></span></button></li>`:`<li class="task static"><span class="tick" aria-hidden="true">–</span><span><b>${esc(t.t)}</b></span></li>`).join("")
+    :p.tasks.map((t,k)=>interactive
+      ?`<li><button class="task ${t.done?"done":""}" data-act="tick" data-i="${i}" data-k="${k}" aria-pressed="${t.done}"><span class="tick" aria-hidden="true">${t.done?"✓":""}</span><span><b>${esc(t.t)}<span class="tag">${t.l?"larga":"corta"}</span>${t.m?'<span class="tag">obligatoria</span>':""}</b><small>${esc(t.d)}</small></span></button></li>`
+      :`<li class="task static"><span class="tick" aria-hidden="true"></span><span><b>${esc(t.t)}<span class="tag">${t.l?"larga":"corta"}</span>${t.m?'<span class="tag">obligatoria</span>':""}</b><small>${esc(t.d)}</small></span></li>`
+    ).join("");
+  const sab=imp?`<div class="sab"><b>Sabotajes restantes: ${G.sabLeft}</b>
+    <button class="danger lg" style="margin-top:8px" data-act="sab" data-i="${i}" ${G.sabLeft<1?"disabled":""}>Elegir sabotaje</button>
+    ${G.sabText[i]?`<div class="sabText">${esc(G.sabText[i])}<br><small class="muted">Hazlo sin que te vean. No lo anuncies.</small></div>`:""}</div>`:"";
+  return `<div class="visorCard ${imp?"imp":"crew"}">
+    <div class="visor" aria-hidden="true"></div>
+    <h2>${p.name?dot(p.color)+esc(p.name)+": ":""}${imp?"impostor":"tripulante"}</h2>
+    <p class="sub">${sub}</p>
+    <h3 style="margin-bottom:8px">${imp?"Tareas falsas (aparenta hacerlas)":"Tus tareas"}</h3>
+    <ul class="tasks">${list}</ul>${sab}
+  </div>`;
+}
+function reveal(){
+  const p=G.players[G.ri];
+  const last=G.ri===G.players.length-1;
+  if(!G.rshow){
+    return `<main class="center"><p class="muted">Jugador ${G.ri+1} de ${G.players.length}</p>
+    <h2 class="big">${dot(p.color)}${esc(p.name)}</h2>
+    <p>Pasa el celular a ${esc(p.name)}. Que nadie más mire la pantalla.</p>
+    <button class="primary lg" data-act="show">Soy ${esc(p.name)}, ver mi rol</button></main>`;
+  }
+  return `<main>${cardHTML(p,G.ri,false)}
+    <button class="primary lg" data-act="next">${last?"Empezar la partida":"Ocultar y pasar el celular"}</button></main>`;
+}
+function game(){
+  const crew=G.players.filter(p=>!p.imp);
+  const total=crew.reduce((a,p)=>a+p.tasks.length,0);
+  const done=G.shown;
+  const pct=total?Math.round(done/total*100):0;
+  return `<header class="top" style="padding-bottom:10px"><h2>La casa</h2></header>
+  <section><h3>Tareas de la tripulación</h3>
+    <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+    <p class="muted" style="margin:0">${done} de ${total} completadas. La barra se actualiza solo en las reuniones.</p></section>
+  <section><h3>Jugadores</h3>
+    ${G.players.map((p,i)=>`<div class="pl"><div><span class="nm">${dot(p.color)}${esc(p.name)}</span>${p.alive?"":`<span class="chip out">${p.out==="ej"?"Expulsado":"Eliminado"}</span>`}</div><button class="ghost sm" data-act="view" data-i="${i}">Mi tarjeta</button></div>`).join("")}
+  </section>
+  <button class="danger lg" data-act="meet">Reportar cuerpo o reunión</button>
+  <div class="row2" style="margin-top:10px">
+    <button class="ghost" data-act="rules">Reglamento</button>
+    <button class="ghost" data-act="end">${S.confirmEnd?"¿Seguro? Toca otra vez":"Terminar partida"}</button>
+  </div>`;
+}
+function meetScreen(){
+  const m=G.meet;
+  const alive=G.players.map((p,i)=>({p,i})).filter(o=>o.p.alive);
+  if(m.phase==="bodies"){
+    return `<main><h2>Reunión</h2>
+    <p class="muted" style="margin:8px 0 14px">¿Quién apareció eliminado? Marca todos los cuerpos que encontraron. Si es una reunión de emergencia, no marques a nadie.</p>
+    ${alive.map(o=>`<button class="pick" data-act="body" data-i="${o.i}" aria-pressed="${m.sel.includes(o.i)}"><span>${dot(o.p.color)}${esc(o.p.name)}</span><span>${m.sel.includes(o.i)?"Cuerpo":""}</span></button>`).join("")}
+    <button class="primary lg" data-act="bodiesOk">Continuar</button>
+    <button class="ghost lg" data-act="meetCancel">Cancelar</button></main>`;
+  }
+  if(m.phase==="discuss"){
+    return `<main class="center"><h2>Discusión</h2>
+    <div id="clock" class="clock ${m.left===0?"zero":""}" role="timer">${fmt(m.left)}</div>
+    <p class="muted">Cada quien cuenta dónde estuvo y qué vio.</p><p class="muted">Tareas completadas: ${G.shown} de ${G.players.filter(p=>!p.imp).reduce((a,p)=>a+p.tasks.length,0)}.</p>
+    <button class="primary lg" data-act="toVote">Pasar a votación</button>
+    <button class="ghost lg" data-act="plus30">+30 segundos</button></main>`;
+  }
+  if(m.phase==="vote"){
+    return `<main><h2>Votación</h2>
+    <p class="muted" style="margin:8px 0 14px">A la cuenta de tres, todos señalan a la vez. Elige al jugador con más votos.</p>
+    ${alive.map(o=>`<button class="pick" data-act="vote" data-i="${o.i}" aria-pressed="${m.vote===o.i}"><span>${dot(o.p.color)}${esc(o.p.name)}</span></button>`).join("")}
+    <button class="pick" data-act="vote" data-i="-1" aria-pressed="${m.vote===-1}"><span>Nadie (empate o saltar)</span></button>
+    <button class="danger lg" data-act="voteOk" ${m.vote===null?"disabled":""}>Confirmar</button></main>`;
+  }
+  const r=m.result;
+  const left=G.players.filter(p=>p.imp&&p.alive).length;
+  return `<main class="center"><h2>${r.none?"Nadie fue expulsado":esc(r.name)+" fue expulsado"}</h2>
+  <p style="font-size:20px;margin-top:14px">${r.none?"La votación terminó sin expulsión.":(r.imp?`<b>${esc(r.name)}</b> era impostor.`:`<b>${esc(r.name)}</b> no era impostor.`)}</p>
+  ${r.none?"":`<p class="muted">Quedan ${left} ${left===1?"impostor":"impostores"}.</p>`}
+  <button class="primary lg" data-act="meetEnd">Volver a la casa</button></main>`;
+}
+function endScreen(){
+  const w=G.winner;
+  return `<main><div class="win ${w.side}"><h2>${w.side==="crew"?"Ganó la tripulación":"Ganaron los impostores"}</h2><p style="margin:8px 0 0">${esc(w.why)}</p></div>
+  <section><h3>Roles de esta partida</h3>
+    ${G.players.map(p=>{const d=p.tasks.filter(t=>t.done).length;return `<div class="pl"><span class="nm">${dot(p.color)}${esc(p.name)}</span><span class="chip ${p.imp?"out":""}">${p.imp?"Impostor":`Tripulante, ${d}/${p.tasks.length} tareas`}</span></div>`}).join("")}
+  </section>
+  <button class="primary lg" data-act="rematch">Revancha con los mismos jugadores</button>
+  <button class="ghost lg" data-act="home">Volver al inicio</button></main>`;
+}
+function taskRow(x){
+  const off=S.off.includes(x.key),must=S.must.includes(x.key),k=esc(x.key);
+  if(S.editing===x.key){
+    const ed=S.editDraft;
+    return `<li class="trow"><input type="text" id="editT" value="${esc(ed.t)}" maxlength="50" aria-label="Nombre de la tarea"><input type="text" id="editD" value="${esc(ed.d)}" maxlength="90" placeholder="Qué hay que hacer" aria-label="Descripción de la tarea" style="margin-top:8px"><div class="tbtn"><button class="primary sm" data-act="saveEdit">Guardar</button><button class="ghost sm" data-act="cancelEdit">Cancelar</button>${x.built&&S.ov[x.key]?`<button class="ghost sm" data-act="resetEdit" data-key="${k}">Restaurar original</button>`:""}</div></li>`;
+  }
+  return `<li class="trow ${off?"off":""}"><div class="tt"><b>${esc(x.t)}</b>${x.d?`<small>${esc(x.d)}</small>`:""}</div><div class="tbtn"><button class="ghost sm" data-act="toggleOff" data-key="${k}" aria-pressed="${!off}">${off?"Desactivada":"Activa"}</button><button class="ghost sm mustb" data-act="toggleMust" data-key="${k}" aria-pressed="${must}">${must?"★ Sí o sí":"☆ Sí o sí"}</button><button class="ghost sm" data-act="editTask" data-key="${k}">Editar</button>${x.built?"":`<button class="ghost sm" data-act="delTask" data-key="${k}" aria-label="Borrar ${esc(x.t)}">Borrar</button>`}</div></li>`;
+}
+function tasksScreen(){
+  const all=allTasks(),d=S.draft;
+  const list=a=>`<ul class="tasksList">${a.map(taskRow).join("")}</ul>`;
+  return `<header class="top" style="padding-bottom:10px"><h2>Tareas</h2><p>${activeCount()} activas de ${all.length}. Desactiva las que no puedan hacer y marca “Sí o sí” las que quieren que salgan en esta partida.</p><button class="primary" data-act="tasksDone">Listo</button></header>
+  <section><h3>Agregar tarea</h3>
+    <input type="text" id="newT" value="${esc(d.t)}" placeholder="Nombre, por ejemplo: Dar de comer al perro" maxlength="50" aria-label="Nombre de la tarea">
+    <input type="text" id="newD" value="${esc(d.d)}" placeholder="Qué hay que hacer (opcional)" maxlength="90" aria-label="Descripción de la tarea" style="margin-top:8px">
+    <div class="seg" style="margin-top:10px"><button data-act="newL" data-v="0" aria-pressed="${!d.l}">Corta</button><button data-act="newL" data-v="1" aria-pressed="${d.l}">Larga</button></div>
+    <button class="ghost mustb" data-act="newM" aria-pressed="${d.m}" style="width:100%;margin-bottom:10px">${d.m?"★":"☆"} Sí o sí en esta partida</button>
+    <button class="primary lg" style="margin-top:0" data-act="addTask">Agregar tarea</button>
+  </section>
+  <div class="row2" style="margin-bottom:14px"><button class="ghost" data-act="allOn">Activar todas</button><button class="ghost" data-act="clearMust">Quitar “sí o sí” (${mustCount()})</button></div>
+  <section><h3>Cortas</h3>${list(all.filter(x=>!x.l))}</section>
+  <section><h3>Largas</h3>${list(all.filter(x=>x.l))}</section>
+  <button class="primary lg" data-act="tasksDone">Listo</button>`;
+}
+function rulesHTML(){
+  return `<div class="sheet" data-act="closeRules"><div class="sheetIn rules" role="dialog" aria-modal="true" aria-label="Reglamento" data-stop="1">
+  <h2>Reglamento</h2>
+  <div class="goal" style="margin-top:12px"><b>Objetivo.</b> La tripulación gana si completa todas sus tareas o expulsa a todos los impostores. Los impostores ganan si igualan en número a los tripulantes vivos.</div>
+  <ol>${RULES.map(r=>`<li>${esc(r)}</li>`).join("")}</ol>
+  <button class="primary lg" data-act="closeRules">Entendido</button></div></div>`;
+}
+function render(){
+  const keep=document.querySelector(".sheetIn");
+  const st=keep?keep.scrollTop:0;
+  let h="";
+  if(S.screen==="home")h=home();
+  else if(S.screen==="reveal")h=reveal();
+  else if(S.screen==="game")h=game();
+  else if(S.screen==="meet")h=meetScreen();
+  else if(S.screen==="end")h=endScreen();
+  else if(S.screen==="tasks")h=tasksScreen();
+  if(S.view!==null&&G&&S.screen==="game")h+=`<div class="sheet"><div class="sheetIn">${cardHTML(G.players[S.view],S.view,true)}<button class="primary lg" data-act="closeView">Ocultar mi tarjeta</button></div></div>`;
+  if(S.rules)h+=rulesHTML();
+  app.innerHTML=h;
+  const ns=document.querySelector(".sheetIn");
+  if(ns&&keep&&st)ns.scrollTop=st;
+}
+
+// ====== Eventos ======
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset&&t.dataset.pi!==undefined){S.players[+t.dataset.pi]=t.value;save()}
+  else if(t.id==="newT")S.draft.t=t.value;
+  else if(t.id==="newD")S.draft.d=t.value;
+  else if(t.id==="editT")S.editDraft.t=t.value;
+  else if(t.id==="editD")S.editDraft.d=t.value;
+  else if(t.id==="cfg")S.cfg=t.value;
+});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");
+  if(!b)return;
+  if(b.classList.contains("sheet")&&e.target.closest("[data-stop]"))return;
+  const a=b.dataset.act,i=+b.dataset.i,k=+b.dataset.k;
+  switch(a){
+    case "set":{
+      const key=b.dataset.k,v=+b.dataset.v;
+      S[key]=v;if(S.nShort+S.nLong<1){if(key==="nShort")S.nLong=1;else S.nShort=1}save();render();break}
+    case "add":if(S.players.length<8){S.players.push("Jugador "+(S.players.length+1));S.colors.push(COLORS.map(c=>c.id).find(id=>!S.colors.includes(id)));S.pickIdx=null;save();render()}break;
+    case "rm":if(S.players.length>3){S.players.splice(i,1);S.colors.splice(i,1);S.pickIdx=null;save();render()}break;
+    case "tasks":S.screen="tasks";render();window.scrollTo(0,0);break;
+    case "tasksDone":S.editing=null;S.screen="home";render();window.scrollTo(0,0);break;
+    case "toggleOff":{const key=b.dataset.key,ix=S.off.indexOf(key);if(ix>=0)S.off.splice(ix,1);else{S.off.push(key);S.must=S.must.filter(x=>x!==key)}save();render();break}
+    case "toggleMust":{const key=b.dataset.key,ix=S.must.indexOf(key);if(ix>=0)S.must.splice(ix,1);else{S.must.push(key);S.off=S.off.filter(x=>x!==key)}save();render();break}
+    case "delTask":{const key=b.dataset.key;S.cust=S.cust.filter(c=>"c:"+c.id!==key);S.off=S.off.filter(x=>x!==key);S.must=S.must.filter(x=>x!==key);save();render();break}
+    case "editTask":{const x=allTasks().find(y=>y.key===b.dataset.key);if(x){S.editing=x.key;S.editDraft={t:x.t,d:x.d}}render();break}
+    case "cancelEdit":S.editing=null;render();break;
+    case "saveEdit":{
+      const key=S.editing,t=S.editDraft.t.trim(),d=S.editDraft.d.trim();
+      if(!key||!t)break;
+      if(key.startsWith("c:")){const cc=S.cust.find(c=>"c:"+c.id===key);if(cc){cc.t=t;cc.d=d}}
+      else S.ov[key]={t,d};
+      S.editing=null;save();render();break}
+    case "resetEdit":{delete S.ov[b.dataset.key];S.editing=null;save();render();break}
+    case "cfgExport":{
+      const data={names:S.players,nShort:S.nShort,nLong:S.nLong,discuss:S.discuss,cust:S.cust,off:S.off,must:S.must,ov:S.ov,colors:S.colors};
+      S.cfg="IEC1:"+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+      S.cfgMsg="Texto listo. Cópialo y pégalo en el otro celular.";
+      S.cfgOpen=true;
+      try{if(navigator.clipboard)navigator.clipboard.writeText(S.cfg).then(()=>{S.cfgMsg="Copiado. Pégalo en el otro celular.";render()},()=>{})}catch(e){}
+      render();break}
+    case "cfgImport":{
+      try{
+        let s=S.cfg.trim();
+        if(!s)throw new Error("vacio");
+        if(s.startsWith("IEC1:"))s=decodeURIComponent(escape(atob(s.slice(5).replace(/\s+/g,""))));
+        applyCfg(JSON.parse(s));
+        S.cfgMsg="Configuración importada.";
+      }catch(e){S.cfgMsg="No se pudo importar. Revisa que el texto esté completo."}
+      S.cfgOpen=true;render();break}
+    case "pickColor":S.pickIdx=S.pickIdx===i?null:i;render();break;
+    case "setColor":S.colors[i]=b.dataset.c;S.pickIdx=null;save();render();break;
+    case "allOn":S.off=[];save();render();break;
+    case "clearMust":S.must=[];save();render();break;
+    case "newL":S.draft.l=b.dataset.v==="1";render();break;
+    case "newM":S.draft.m=!S.draft.m;render();break;
+    case "addTask":{
+      const t=S.draft.t.trim();
+      if(!t||S.cust.length>=60)break;
+      const id=Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
+      S.cust.push({id,t,d:S.draft.d.trim(),l:S.draft.l});
+      if(S.draft.m)S.must.push("c:"+id);
+      S.draft={t:"",d:"",l:false,m:false};save();render();break}
+    case "rules":S.rules=true;render();break;
+    case "closeRules":S.rules=false;render();break;
+    case "start":case "rematch":save();newGame();S.screen="reveal";render();window.scrollTo(0,0);break;
+    case "show":G.rshow=true;render();window.scrollTo(0,0);break;
+    case "next":
+      if(G.ri<G.players.length-1){G.ri++;G.rshow=false}else{S.screen="game"}
+      render();window.scrollTo(0,0);break;
+    case "view":S.view=i;render();break;
+    case "closeView":S.view=null;render();break;
+    case "tick":{
+      const t=G.players[i].tasks[k];t.done=!t.done;
+      if(!checkWin()){}
+      render();break}
+    case "sab":
+      if(G.sabLeft>0){G.sabLeft--;G.sabText[i]=SABS[Math.floor(Math.random()*SABS.length)];render()}break;
+    case "end":
+      if(S.confirmEnd){S.confirmEnd=false;S.screen="home";G=null;stopT()}else{S.confirmEnd=true}
+      render();break;
+    case "home":S.screen="home";G=null;render();break;
+    case "meet":G.shown=G.players.filter(p=>!p.imp).reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);G.meet={phase:"bodies",sel:[],vote:null,left:S.discuss,result:null};S.screen="meet";S.confirmEnd=false;render();window.scrollTo(0,0);break;
+    case "meetCancel":G.meet=null;S.screen="game";render();break;
+    case "body":{
+      const s=G.meet.sel,ix=s.indexOf(i);
+      if(ix>=0)s.splice(ix,1);else s.push(i);
+      render();break}
+    case "bodiesOk":{
+      G.meet.sel.forEach(ix=>{G.players[ix].alive=false;G.players[ix].out="kill"});
+      if(checkWin()){render();window.scrollTo(0,0);break}
+      G.meet.phase="discuss";G.meet.left=S.discuss;startT();render();break}
+    case "plus30":G.meet.left+=30;{const c=document.getElementById("clock");if(c){c.textContent=fmt(G.meet.left);c.classList.remove("zero")}}if(!tmr)startT();break;
+    case "toVote":stopT();G.meet.phase="vote";render();break;
+    case "vote":G.meet.vote=i;render();break;
+    case "voteOk":{
+      const m=G.meet;
+      if(m.vote===null)break;
+      if(m.vote>=0){const p=G.players[m.vote];p.alive=false;p.out="ej";m.result={none:false,name:p.name,imp:p.imp}}
+      else m.result={none:true};
+      m.phase="result";render();window.scrollTo(0,0);break}
+    case "meetEnd":
+      G.meet=null;
+      if(!checkWin())S.screen="game";
+      render();window.scrollTo(0,0);break;
+  }
+});
+document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("cfg"))S.cfgOpen=e.target.open},true);
+render();
+</script>
+</body>
+</html>
